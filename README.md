@@ -3,6 +3,49 @@ A fork of `meteor:stylus` including the stylus plugins from `mquandalle:stylus`
 
 `mquandalle:stylus` was failing when using the `import` syntax as part of `ecmascript` modules, so I forked the excellent `meteor:stylus` package which supports ecmascript and caching and added the same stylus plugins that `mquandalle:stylus` used so it is backwards compatible with `mquandalle:stylus`.
 
+## Included packages
+
+### [Stylus](http://stylus-lang.com/) 0.54.5
+
+Expressive, dynamic, robust CSS. Curly braces and semicolons: optional.
+
+### [Nib](http://tj.github.io/nib/) 1.1.2
+
+Nib is a popular Stylus package that adds many helpful, basic, utility mixins.
+
+### [Jeet](http://jeet.gs/) 7.1.0
+
+An advanced -- yet intuitive -- grid system. Very capable, and useful for laying
+out a page without cluttering up HTML with grid classes.
+
+It's important to remember to include it in your styles, like so:
+
+```
+@import 'jeet'
+```
+
+### [Rupture](http://jenius.github.io/rupture/) 0.6.2
+
+Simple media queries for Stylus. Must be imported before use.
+
+### [Typographic](https://github.com/corysimmons/typographic) 2.9.3
+
+Quick and dirty responsive typography for the rest of us. Offers great selection
+of common font stacks, and several ways to apply them to your document. Must be
+imported before use.
+
+### [Axis](http://axis.netlify.com/) 0.4.3
+
+A higher-level Stylus mixin library with lots of extra functionality. Be sure
+not to miss the normalize() mixin. Axis uses and imports Nib, so Nib has been
+removed from this package. This might not require an import statement.
+
+### [Autoprefixer](https://github.com/jenius/autoprefixer-stylus) 0.13.0
+
+An autoprefixer plugin for Stylus. Will also remove unnecessary prefixes if
+there is widespread browser support. It is automatic and does not need to be
+imported.
+
 ------
 
 [Stylus](http://learnboost.github.com/stylus/) is a CSS pre-processor with a
