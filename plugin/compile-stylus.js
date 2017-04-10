@@ -179,13 +179,13 @@ class StylusCompiler extends MultiFileCachingCompiler {
       .use(nib())
       .use(rupture())
       .use(jeet())
-      .use(typographic())
-      .use(autoprefixer());
+      .use(typographic());
 
     if (fileOptions.autoprefixer) {
-      style = style.use(autoprefixer(fileOptions.autoprefixer))
+      style = style.use(autoprefixer(fileOptions.autoprefixer));
+    } else {
+      style = style.use(autoprefixer({hideWarnings: true}));
     }
-
 
 
     style = style.set('filename', inputFile.getPathInPackage())

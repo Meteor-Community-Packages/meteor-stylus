@@ -1,13 +1,13 @@
 Package.describe({
   name: 'coagmano:stylus',
-  version: '1.0.0',
+  version: '1.0.1',
   summary: 'Stylus plugin with plugins from mquandalle:stylus. Compatible with Meteor 1.4 and \'ecmascript\'',
   git: "https://github.com/coagmano/meteor-stylus.git"
 });
 
 Package.registerBuildPlugin({
   name: 'compileStylusBatch',
-  use: ['ecmascript', 'caching-compiler'],
+  use: ['ecmascript@0.6.3', 'caching-compiler@1.1.9'],
   sources: [
     'plugin/compile-stylus.js'
   ],
