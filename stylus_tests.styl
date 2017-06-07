@@ -1,5 +1,7 @@
 @import "stylus_tests.import.styl"
 
+import-from-json-dashy = load-var-from-json('test-settings.json', 'public.dashy')
+
 #stylus-tests
   zoom: 1
 
@@ -14,3 +16,6 @@ dashy = dashed
 
 .stylus-import-dashy-border
   border-left: 1px importDashy black
+
+.stylus-import-from-json-dashy-border
+    border-left: 1px import-from-json-dashy black

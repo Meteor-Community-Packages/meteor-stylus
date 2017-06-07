@@ -1,3 +1,5 @@
+import { Meteor } from 'meteor/meteor';
+
 const stylus = Npm.require('stylus');
 const Future = Npm.require('fibers/future');
 const fs = Plugin.fs;
@@ -187,6 +189,71 @@ class StylusCompiler extends MultiFileCachingCompiler {
       style = style.use(autoprefixer({hideWarnings: true}));
     }
 
+    // DEBUG: This loads too late to be able to add new vars
+    // style = style.define('loadVarsFromJson', function (filePath) {
+    //     const rootUrl = path.resolve('.').split('.meteor')[0]
+    //     const parsed = parseImportPath(filePath.val, [rootUrl])
+
+    //     if (parsed.packageName != '') { console.warn ('WARN: PACKAGE PATHS NOT IMPLEMTED\n'); }
+
+    //     const json = fs.readFileSync(rootUrl + path.sep + parsed.pathInPackage, 'utf8');
+    //     try {
+    //         const vars = JSON.parse(json);
+
+    //         const flattenedVars = Object.assign( {},
+    //             //spread the result into our return object
+    //             ...function _flatten( objectBit, path = '' ) {
+    //                 //concat everything into one level
+    //                 return [].concat(
+    //                     //iterate over object
+    //                     ...Object.keys( objectBit ).map(key => {
+    //                         //check if there is a nested object
+    //                         let newKey = path === '' ? key : `${ path }-${ key }`
+    //                         if (typeof objectBit[ key ] === 'object') {
+    //                             //call itself if there is
+    //                             return _flatten( objectBit[ key ], newKey )
+    //                         } else {
+    //                             //append object with it's path as key
+    //                             return ( { [ newKey ]: objectBit[ key ] } )
+    //                         }
+    //                     })
+    //                 )
+    //             }( vars )
+    //         );
+
+    //         Object.keys(flattenedVars).forEach(key => {
+    //             style = style.define( '$'+key, flattenedVars[key]);
+    //         })
+
+    //         style = style.define('$test-variable', true);
+    //         style = style.define('$test-variable2', 'a string');
+    //         style = style.define('$test-variable3', 42);
+
+    //     } catch (e) {
+    //         console.warn(`coagmano:stylus - loadVarsFromJson: Problem parsing ${parsed.pathInPackage} in ${inputFile.getDisplayPath()} `);
+    //         console.error(e)
+    //     }
+    // })
+    //
+    style = style.define('load-var-from-json', function (filePath, ref) {
+        const rootUrl = path.resolve('.').split('.meteor')[0]
+        const parsed = parseImportPath(filePath.val, [rootUrl, ])
+
+        if (parsed.packageName != '') { console.warn ('WARN: PACKAGE PATHS NOT IMPLEMTED\n'); }
+
+        const json = fs.readFileSync(rootUrl + path.sep + parsed.pathInPackage, 'utf8');
+        try {
+            const vars = JSON.parse(json);
+            let val = vars;
+            ref.val.split('.').forEach(refBit => {
+                val = val[refBit];
+            })
+            return val;
+        } catch (e) {
+            console.warn(`coagmano:stylus - load-var-from-json: Problem parsing ${parsed.pathInPackage} in ${inputFile.getDisplayPath()} `);
+            console.error(e)
+        }
+    })
 
     style = style.set('filename', inputFile.getPathInPackage())
                  .set('sourcemap', { inline: false, comment: false })
