@@ -1,11 +1,20 @@
 # coagmano:stylus
+
 A fork of `meteor:stylus` including the stylus plugins from `mquandalle:stylus`
 
-`mquandalle:stylus` was failing when using the `import` syntax as part of `ecmascript` modules, so I forked the excellent `meteor:stylus` package which supports ecmascript and caching and added the same stylus plugins that `mquandalle:stylus` used so it is backwards compatible with `mquandalle:stylus`.
+`mquandalle:stylus` was failing when using the `import` syntax as part of
+`ecmascript` modules, so I forked the excellent `meteor:stylus` package which
+supports ecmascript and caching and added the same stylus plugins that
+`mquandalle:stylus` used so it is backwards compatible with `mquandalle:stylus`.
+
+### 1.1.0 Update
+
+This project now supports Meteor 1.8's lazy compilation via the
+`compileOneFileLater` method ([Meteor PR#9983](https://github.com/meteor/meteor/pull/9983))
 
 ## Included packages
 
-### [Stylus](http://stylus-lang.com/) 0.54.5
+### [Stylus](http://stylus-lang.com/) 0.54.5 (Meteor's fork)
 
 Expressive, dynamic, robust CSS. Curly braces and semicolons: optional.
 

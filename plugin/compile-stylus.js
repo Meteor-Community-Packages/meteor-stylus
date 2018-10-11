@@ -28,8 +28,8 @@ class StylusCompiler extends MultiFileCachingCompiler {
   getCacheKey(inputFile) {
     // prettier-ignore
     return [
-      inputFile.getSourceHash(),
-      inputFile.getFileOptions(),
+      inputFile.getArch(),
+      inputFile.getSourceHash()
     ];
   }
 
@@ -53,6 +53,21 @@ class StylusCompiler extends MultiFileCachingCompiler {
     return !/\.import\.styl$/.test(pathInPackage);
   }
 
+  compileOneFileLater(inputFile, getResult) {
+    // prettier-ignore
+    inputFile.addStylesheet({
+        path: inputFile.getPathInPackage(),
+      }, async () => {
+        const result = await getResult();
+        return (
+          result && {
+            data: result.css,
+            sourceMap: result.sourceMap,
+          }
+        );
+      }
+    );
+  }
   compileOneFile(inputFile, allFiles) {
     const referencedImportPaths = [];
 
