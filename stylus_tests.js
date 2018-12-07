@@ -45,6 +45,16 @@ Tinytest.add('stylus - indirect @import globbing', function (test) {
   );
 });
 
+Tinytest.add('stylus - multiple @import globbing', function (test) {
+  verifyStyles(
+    Template.stylus_test_multiple_import_globbing,
+    function (p) {
+      test.equal(getStyleProperty(p, 'border-left-style'), 'ridge');
+      test.equal(getStyleProperty(p, 'border-bottom-style'), 'inset');
+    }
+  );
+});
+
 // Tinytest.add("stylus - import-var-from-json", function(test) {
 //   var div = document.createElement('div');
 //   Blaze.render(Template.stylus_test_import_var_from_json, div);

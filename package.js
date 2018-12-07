@@ -37,5 +37,8 @@ Package.onTest(function (api) {
     'test_files/direct/direct.import.styl',
     'test_files/indirect/1/indirect1.import.styl',
     'test_files/indirect/2/indirect2.import.styl',
+    'test_files/multiple/multiple1.import.styl',
+    'test_files/multiple/multiple2.import.styl',
+    'test_files/multiple/multiple3.import.styl',
   ], 'client');
 });
