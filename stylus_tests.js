@@ -31,7 +31,7 @@ Tinytest.add('stylus - direct @import globbing', function (test) {
   verifyStyles(
     Template.stylus_test_direct_import_globbing,
     function (p) {
-      test.equal(getStyleProperty(p, 'background-color'), 'rgb(255, 0, 0)');
+      test.equal(getStyleProperty(p, 'border-top-style'), 'dotted');
     }
   );
 });
@@ -40,7 +40,7 @@ Tinytest.add('stylus - indirect @import globbing', function (test) {
   verifyStyles(
     Template.stylus_test_indirect_import_globbing,
     function (p) {
-      test.equal(getStyleProperty(p, 'background-color'), 'rgb(0, 0, 255)');
+      test.equal(getStyleProperty(p, 'border-right-style'), 'groove');
     }
   );
 });
