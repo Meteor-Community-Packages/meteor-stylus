@@ -323,6 +323,8 @@ class StylusCompiler extends MultiFileCachingCompiler {
     } catch (e) {
       inputFile.error({
         message: 'Stylus compiler error: ' + e.message,
+        line: e.lineno,
+        column: e.column,
       });
       return null;
     }
