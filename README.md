@@ -143,13 +143,17 @@ To import a file from the app, leave the content of curly braces empty:
   background-color: $app-base-color
 ```
 
+You can also import from an NPM package:
+
+```stylus
+@import '{}/node_modules/vuetify/src/stylus/main'
+```
 
 ## Limitations
 
 Since this package uses custom code for `@import`s, some of the import syntax is
 not supported at the moment:
 
-- globbing: `@import './folder/*'`
 - importing `index.styl`: `@import ./folder/` - should automatically load
   `./folder/index.styl`
 

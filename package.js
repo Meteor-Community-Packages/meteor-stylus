@@ -1,6 +1,6 @@
 Package.describe({
   name: 'coagmano:stylus',
-  version: '1.1.1',
+  version: '1.2.0',
   summary: 'Stylus plugin with plugins from mquandalle:stylus. Compatible with Meteor 1.4 and \'ecmascript\'',
   git: 'https://github.com/coagmano/meteor-stylus.git'
 });
@@ -18,7 +18,8 @@ Package.registerBuildPlugin({
     rupture: '0.6.2',
     axis: '0.4.3',
     typographic: '2.9.3',
-    'autoprefixer-stylus': '0.13.0'
+    'autoprefixer-stylus': '0.13.0',
+    glob: '7.1.2',
   }
 });
 
@@ -32,6 +33,12 @@ Package.onTest(function (api) {
     'stylus_tests.html',
     'stylus_tests.styl',
     'stylus_tests.import.styl',
-    'stylus_tests.js'
+    'stylus_tests.js',
+    'test_files/direct/direct.import.styl',
+    'test_files/indirect/1/indirect1.import.styl',
+    'test_files/indirect/2/indirect2.import.styl',
+    'test_files/multiple/multiple1.import.styl',
+    'test_files/multiple/multiple2.import.styl',
+    'test_files/multiple/multiple3.import.styl',
   ], 'client');
 });
