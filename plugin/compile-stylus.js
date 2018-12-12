@@ -144,7 +144,7 @@ class StylusCompiler extends MultiFileCachingCompiler {
       readFile(filePath) {
         // Because the default file loader is overwritten, we need to check for
         // absolute paths or built in plugins and allow the
-        // default implementation to hande this
+        // default implementation to handle this
         const isAbsolute = filePath[0] === '/';
         const isStylusBuiltIn =
           filePath.indexOf('/node_modules/stylus/lib/') !== -1;
@@ -219,7 +219,7 @@ class StylusCompiler extends MultiFileCachingCompiler {
     //     const rootUrl = path.resolve('.').split('.meteor')[0]
     //     const parsed = parseImportPath(filePath.val, [rootUrl])
 
-    //     if (parsed.packageName != '') { console.warn ('WARN: PACKAGE PATHS NOT IMPLEMTED\n'); }
+    //     if (parsed.packageName != '') { console.warn ('WARN: PACKAGE PATHS NOT IMPLEMENTED\n'); }
 
     //     const json = fs.readFileSync(rootUrl + path.sep + parsed.pathInPackage, 'utf8');
     //     try {
@@ -265,7 +265,7 @@ class StylusCompiler extends MultiFileCachingCompiler {
       const parsed = parseImportPath(filePath.val, [rootUrl]);
 
       if (parsed.packageName != '') {
-        console.warn('WARN: PACKAGE PATHS NOT IMPLEMTED\n');
+        console.warn('WARN: PACKAGE PATHS NOT IMPLEMENTED\n');
       }
 
       const json = fs.readFileSync(

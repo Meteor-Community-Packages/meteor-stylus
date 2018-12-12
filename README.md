@@ -153,3 +153,10 @@ not supported at the moment:
 - importing `index.styl`: `@import ./folder/` - should automatically load
   `./folder/index.styl`
 
+## Tests
+
+To test this package, check out the repo and run:
+
+```bash
+meteor test-packages ./
+```

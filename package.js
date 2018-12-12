@@ -1,6 +1,6 @@
 Package.describe({
   name: 'coagmano:stylus',
-  version: '1.1.0',
+  version: '1.1.1',
   summary: 'Stylus plugin with plugins from mquandalle:stylus. Compatible with Meteor 1.4 and \'ecmascript\'',
   git: 'https://github.com/coagmano/meteor-stylus.git'
 });
