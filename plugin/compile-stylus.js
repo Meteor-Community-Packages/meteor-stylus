@@ -125,13 +125,21 @@ class StylusCompiler extends MultiFileCachingCompiler {
         }
 
         if (importPath[0] !== '{') {
+          console.log('trying to find path for', importPath, 'in:', filename, 'with:', paths)
+          // bail out early for absolute paths, plugins or BIFs
+          if (shouldUseDefaultImplementation(importPath) && statOrNull(importPath)) {
+            // TODO: Check for a folder + index.styl, this sems to be where this fails?
+            return [importPath];
+          }
           // if it is not a custom syntax path, it could be a lookup in a folder
           for (let i = paths.length - 1; i >= 0; i--) {
+            if (shouldUseDefaultImplementation(paths[i])) continue;
             let joined = path.join(paths[i], importPath);
             // if we ended up with a custom syntax path, let's try without
             if (joined.startsWith('{}/')) {
               joined = joined.substr(3);
             }
+            console.log('about to call resolvePath with:', joined, 'meta:', filename)
             const resolvedPaths = resolvePath(joined);
             if (resolvedPaths.length) {
               return resolvedPaths;
@@ -148,29 +156,7 @@ class StylusCompiler extends MultiFileCachingCompiler {
         return [absolutePath];
       },
       readFile(filePath) {
-        // Because the default file loader is overwritten, we need to check for
-        // absolute paths or built in plugins and allow the
-        // default implementation to handle this
-        const isAbsolute = filePath[0] === '/';
-        const isStylusBuiltIn =
-          filePath.indexOf('/node_modules/stylus/lib/') !== -1;
-        const isNib = filePath.indexOf('/node_modules/nib/lib/nib/') !== -1;
-        const isAxis = filePath.indexOf('/node_modules/axis/axis/') !== -1;
-        const isJeet = filePath.indexOf('/node_modules/jeet/styl/') !== -1;
-        const isRupture =
-          filePath.indexOf('/node_modules/rupture/rupture/') !== -1;
-        const istypographic =
-          filePath.indexOf('/node_modules/typographic/stylus/') !== -1;
-
-        if (
-          isAbsolute ||
-          isStylusBuiltIn ||
-          isNib ||
-          isAxis ||
-          isJeet ||
-          isRupture ||
-          istypographic
-        ) {
+        if (shouldUseDefaultImplementation(filePath)) {
           // absolute path? let the default implementation handle this
           return Npm.require('fs').readFileSync(filePath, 'utf8');
         }
@@ -235,52 +221,17 @@ class StylusCompiler extends MultiFileCachingCompiler {
       style = style.use(autoprefixer({ hideWarnings: true }));
     }
 
-    // DEBUG: This loads too late to be able to add new vars
-    // style = style.define('loadVarsFromJson', function (filePath) {
-    //     const rootUrl = path.resolve('.').split('.meteor')[0]
-    //     const parsed = parseImportPath(filePath.val, [rootUrl])
-
-    //     if (parsed.packageName != '') { console.warn ('WARN: PACKAGE PATHS NOT IMPLEMENTED\n'); }
-
-    //     const json = fs.readFileSync(rootUrl + path.sep + parsed.pathInPackage, 'utf8');
-    //     try {
-    //         const vars = JSON.parse(json);
-
-    //         const flattenedVars = Object.assign( {},
-    //             //spread the result into our return object
-    //             ...function _flatten( objectBit, path = '' ) {
-    //                 //concat everything into one level
-    //                 return [].concat(
-    //                     //iterate over object
-    //                     ...Object.keys( objectBit ).map(key => {
-    //                         //check if there is a nested object
-    //                         let newKey = path === '' ? key : `${ path }-${ key }`
-    //                         if (typeof objectBit[ key ] === 'object') {
-    //                             //call itself if there is
-    //                             return _flatten( objectBit[ key ], newKey )
-    //                         } else {
-    //                             //append object with it's path as key
-    //                             return ( { [ newKey ]: objectBit[ key ] } )
-    //                         }
-    //                     })
-    //                 )
-    //             }( vars )
-    //         );
-
-    //         Object.keys(flattenedVars).forEach(key => {
-    //             style = style.define( '$'+key, flattenedVars[key]);
-    //         })
-
-    //         style = style.define('$test-variable', true);
-    //         style = style.define('$test-variable2', 'a string');
-    //         style = style.define('$test-variable3', 42);
-
-    //     } catch (e) {
-    //         console.warn(`coagmano:stylus - loadVarsFromJson: Problem parsing ${parsed.pathInPackage} in ${inputFile.getDisplayPath()} `);
-    //         console.error(e)
-    //     }
-    // })
-    //
+    /**
+     * Add custom function in stylus that allows loading variables from JSON
+     * This was primarily added to support sharing vars in settings.json between
+     * Meteor.settings and stylus files like so:
+     * ```stylus
+     * $cdnroot = load-var-from-json('{}/settings.json', 'public.cdnroot')
+     * ```
+     * Stylus casts JavaScript values to their Stylus equivalents when possible
+     *
+     * NOTE: Package imports are not yet supported
+     */
     style = style.define('load-var-from-json', function(filePath, ref) {
       const rootUrl = path.resolve('.').split('.meteor')[0];
       const parsed = parseImportPath(filePath.val, [rootUrl]);
@@ -321,6 +272,7 @@ class StylusCompiler extends MultiFileCachingCompiler {
     try {
       css = f.wait();
     } catch (e) {
+      console.error(e);
       inputFile.error({
         message: 'Stylus compiler error: ' + e.message,
         line: e.lineno,
@@ -347,7 +299,40 @@ class StylusCompiler extends MultiFileCachingCompiler {
 function resolvePath(path) {
   let paths = glob.sync(path);
   if (paths.length === 0) {
+    console.log('test glob searching:', path);
     paths = glob.sync(`**/${path}`);
+    console.log('test glob found:', paths);
+    console.log((new Error).stack)
   }
   return paths;
+}
+
+function statOrNull(path) {
+  try {
+    return fs.statSync(path);
+  } catch (e) {
+    return null;
+  }
+}
+
+function shouldUseDefaultImplementation(path = '') {
+  // Because the default file loader is overwritten, we need to check for
+  // absolute paths or built in plugins and allow the
+  // default implementation to handle this
+  return (
+    // isAbsolute
+    path[0] === '/' ||
+    // isStylusBuiltIn
+    path.includes('/node_modules/stylus/lib/') ||
+    // isNib
+    path.includes('/node_modules/nib/lib/nib/') ||
+    // isAxis
+    path.includes('/node_modules/axis/axis/') ||
+    // isJeet
+    path.includes('/node_modules/jeet/styl/') ||
+    // isRupture
+    path.includes('/node_modules/rupture/rupture/') ||
+    // istypographic
+    path.includes('/node_modules/typographic/stylus/')
+  );
 }
