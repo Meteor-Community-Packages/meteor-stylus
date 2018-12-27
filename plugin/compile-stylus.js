@@ -118,6 +118,15 @@ class StylusCompiler extends MultiFileCachingCompiler {
       return '{' + parsed.packageName + '}/' + parsed.pathInPackage;
     }
 
+    function resolvePath(filePath, sourceRoot) {
+      let filePaths = glob.sync(filePath);
+      if (filePaths.length === 0) {
+        // See https://github.com/meteor/meteor/pull/9272#issuecomment-348249629
+        filePaths = glob.sync(path.join('**', filePath));
+      }
+      return filePaths;
+    }
+
     function isPluginPath(filePath) {
       return filePath.includes('compileStylusBatch/node_modules/stylus/lib/') || // Stylus built-in
         filePath.includes('compileStylusBatch/node_modules/nib/') || // Nib
@@ -135,13 +144,16 @@ class StylusCompiler extends MultiFileCachingCompiler {
           return null;
         }
 
-        if (importPath[0] !== '{') {
+        if (importPath[0] !== '{' && !isPluginPath(importPath)) {
           // if it is not a custom syntax path, it could be a lookup in a folder
           for (let i = paths.length - 1; i >= 0; i--) {
             let joined = path.join(paths[i], importPath);
             // if we ended up with a custom syntax path, let's try without
             if (joined.startsWith('{}/')) {
               joined = joined.substr(3);
+            }
+            if (joined[0] === '{') {
+              continue; // We can never resolve paths like '{foo:bar}/styles.styl'
             }
             const resolvedPaths = resolvePath(joined);
             if (resolvedPaths.length) {
@@ -332,12 +344,5 @@ class StylusCompiler extends MultiFileCachingCompiler {
       sourceMap: sourceMap,
     });
   }
-}
 
-function resolvePath(path) {
-  let paths = glob.sync(path);
-  if (paths.length === 0) {
-    paths = glob.sync(`**/${path}`);
-  }
-  return paths;
 }
