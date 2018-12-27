@@ -108,13 +108,24 @@ class StylusCompiler extends MultiFileCachingCompiler {
       const match = /^\{(.*)\}\/(.*)$/.exec(filePath);
       if (!match) {
         return null;
+      } else {
+        const [, packageName, pathInPackage] = match;
+        return { packageName, pathInPackage };
       }
-
-      const [ignored, packageName, pathInPackage] = match;
-      return { packageName, pathInPackage };
     }
+
     function absoluteImportPath(parsed) {
       return '{' + parsed.packageName + '}/' + parsed.pathInPackage;
+    }
+
+    function isPluginPath(filePath) {
+      return filePath.includes('compileStylusBatch/node_modules/stylus/lib/') || // Stylus built-in
+        filePath.includes('compileStylusBatch/node_modules/nib/') || // Nib
+        filePath.includes('compileStylusBatch/node_modules/axis/') || // Axis
+        filePath.includes('compileStylusBatch/node_modules/jeet/') || // Jeet
+        filePath.includes('compileStylusBatch/node_modules/rupture/') || // Rupture
+        filePath.includes('compileStylusBatch/node_modules/typographic/') || // Typographic
+        false; // Not a plugin
     }
 
     const importer = {
@@ -147,31 +158,12 @@ class StylusCompiler extends MultiFileCachingCompiler {
 
         return [absolutePath];
       },
+
       readFile(filePath) {
         // Because the default file loader is overwritten, we need to check for
         // absolute paths or built in plugins and allow the
         // default implementation to handle this
-        const isAbsolute = filePath[0] === '/';
-        const isStylusBuiltIn =
-          filePath.indexOf('/node_modules/stylus/lib/') !== -1;
-        const isNib = filePath.indexOf('/node_modules/nib/lib/nib/') !== -1;
-        const isAxis = filePath.indexOf('/node_modules/axis/axis/') !== -1;
-        const isJeet = filePath.indexOf('/node_modules/jeet/styl/') !== -1;
-        const isRupture =
-          filePath.indexOf('/node_modules/rupture/rupture/') !== -1;
-        const istypographic =
-          filePath.indexOf('/node_modules/typographic/stylus/') !== -1;
-
-        if (
-          isAbsolute ||
-          isStylusBuiltIn ||
-          isNib ||
-          isAxis ||
-          isJeet ||
-          isRupture ||
-          istypographic
-        ) {
-          // absolute path? let the default implementation handle this
+        if (filePath[0] === '/' || isPluginPath(filePath)) {
           return Npm.require('fs').readFileSync(filePath, 'utf8');
         }
 
