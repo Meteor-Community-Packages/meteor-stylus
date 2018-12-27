@@ -223,11 +223,11 @@ class StylusCompiler extends MultiFileCachingCompiler {
 
     // Here is where the stylus module is instantiated and plugins are attached
     let style = stylus(inputFile.getContentsAsString())
-      .use(axis())
       .use(nib())
-      .use(rupture())
       .use(jeet())
-      .use(typographic());
+      .use(rupture({implicit: false})) // https://github.com/jescalan/rupture#usage
+      .use(typographic())
+      .use(axis({implicit: false})); // https://axis.netlify.com/#usage
 
     if (fileOptions.autoprefixer) {
       style = style.use(autoprefixer(fileOptions.autoprefixer));

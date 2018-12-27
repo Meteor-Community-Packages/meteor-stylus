@@ -22,16 +22,16 @@ Expressive, dynamic, robust CSS. Curly braces and semicolons: optional.
 
 Nib is a popular Stylus package that adds many helpful, basic, utility mixins.
 
-### [Jeet](http://jeet.gs/) 7.2.0
-
-An advanced -- yet intuitive -- grid system. Very capable, and useful for laying
-out a page without cluttering up HTML with grid classes.
-
 It's important to remember to include it in your styles, like so:
 
 ```
-@import 'jeet'
+@import 'nib'
 ```
+
+### [Jeet](http://jeet.gs/) 7.2.0
+
+An advanced -- yet intuitive -- grid system. Very capable, and useful for laying
+out a page without cluttering up HTML with grid classes. Must be imported before use.
 
 ### [Rupture](http://jenius.github.io/rupture/) 0.7.1
 
@@ -47,7 +47,7 @@ imported before use.
 
 A higher-level Stylus mixin library with lots of extra functionality. Be sure
 not to miss the normalize() mixin. Axis uses and imports Nib, so Nib has been
-removed from this package. This might not require an import statement.
+removed from this package. Must be imported before use.
 
 ### [Autoprefixer](https://github.com/jenius/autoprefixer-stylus) 0.14.0
 
