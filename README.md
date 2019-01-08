@@ -22,34 +22,34 @@ Expressive, dynamic, robust CSS. Curly braces and semicolons: optional.
 
 Nib is a popular Stylus package that adds many helpful, basic, utility mixins.
 
-### [Jeet](http://jeet.gs/) 7.1.0
-
-An advanced -- yet intuitive -- grid system. Very capable, and useful for laying
-out a page without cluttering up HTML with grid classes.
-
 It's important to remember to include it in your styles, like so:
 
 ```
-@import 'jeet'
+@import 'nib'
 ```
 
-### [Rupture](http://jenius.github.io/rupture/) 0.6.2
+### [Jeet](http://jeet.gs/) 7.2.0
+
+An advanced -- yet intuitive -- grid system. Very capable, and useful for laying
+out a page without cluttering up HTML with grid classes. Must be imported before use.
+
+### [Rupture](http://jenius.github.io/rupture/) 0.7.1
 
 Simple media queries for Stylus. Must be imported before use.
 
-### [Typographic](https://github.com/corysimmons/typographic) 2.9.3
+### [Typographic](https://github.com/corysimmons/typographic) 3.0.0
 
 Quick and dirty responsive typography for the rest of us. Offers great selection
 of common font stacks, and several ways to apply them to your document. Must be
 imported before use.
 
-### [Axis](http://axis.netlify.com/) 0.4.3
+### [Axis](http://axis.netlify.com/) 1.0.0
 
 A higher-level Stylus mixin library with lots of extra functionality. Be sure
 not to miss the normalize() mixin. Axis uses and imports Nib, so Nib has been
-removed from this package. This might not require an import statement.
+removed from this package. Must be imported before use.
 
-### [Autoprefixer](https://github.com/jenius/autoprefixer-stylus) 0.13.0
+### [Autoprefixer](https://github.com/jenius/autoprefixer-stylus) 0.14.0
 
 An autoprefixer plugin for Stylus. Will also remove unnecessary prefixes if
 there is widespread browser support. It is automatic and does not need to be
@@ -116,7 +116,7 @@ The import syntax from importing files from other packages is curly braces:
 ```javasciprt
 // in procoder:fancy-buttons package's package.js file
 ...
-api.add('styles/buttons.styl', 'client', {isImport: true});
+api.addFiles('styles/buttons.styl', 'client', {isImport: true});
 ...
 ```
 

@@ -1,6 +1,6 @@
 Package.describe({
   name: 'coagmano:stylus',
-  version: '1.2.0',
+  version: '1.2.1',
   summary: 'Stylus plugin with plugins from mquandalle:stylus. Compatible with Meteor 1.4 and \'ecmascript\'',
   git: 'https://github.com/coagmano/meteor-stylus.git'
 });
@@ -13,13 +13,13 @@ Package.registerBuildPlugin({
   ],
   npmDependencies: {
     stylus: 'https://github.com/meteor/stylus/tarball/bb47a357d132ca843718c63998eb37b90013a449', // fork of 0.54.5
+    glob: '7.1.3',
     nib: '1.1.2',
-    jeet: '7.1.0',
-    rupture: '0.6.2',
-    axis: '0.4.3',
-    typographic: '2.9.3',
-    'autoprefixer-stylus': '0.13.0',
-    glob: '7.1.2',
+    jeet: '7.2.0',
+    rupture: '0.7.1',
+    axis: '1.0.0',
+    typographic: '3.0.0',
+    'autoprefixer-stylus': '0.14.0',
   }
 });
 

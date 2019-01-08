@@ -108,13 +108,33 @@ class StylusCompiler extends MultiFileCachingCompiler {
       const match = /^\{(.*)\}\/(.*)$/.exec(filePath);
       if (!match) {
         return null;
+      } else {
+        const [, packageName, pathInPackage] = match;
+        return { packageName, pathInPackage };
       }
-
-      const [ignored, packageName, pathInPackage] = match;
-      return { packageName, pathInPackage };
     }
+
     function absoluteImportPath(parsed) {
       return '{' + parsed.packageName + '}/' + parsed.pathInPackage;
+    }
+
+    function resolvePath(filePath, sourceRoot) {
+      let filePaths = glob.sync(filePath);
+      if (filePaths.length === 0) {
+        // See https://github.com/meteor/meteor/pull/9272#issuecomment-348249629
+        filePaths = glob.sync(path.join('**', filePath));
+      }
+      return filePaths;
+    }
+
+    function isPluginPath(filePath) {
+      return filePath.includes('compileStylusBatch/node_modules/stylus/lib/') || // Stylus built-in
+        filePath.includes('compileStylusBatch/node_modules/nib/') || // Nib
+        filePath.includes('compileStylusBatch/node_modules/axis/') || // Axis
+        filePath.includes('compileStylusBatch/node_modules/jeet/') || // Jeet
+        filePath.includes('compileStylusBatch/node_modules/rupture/') || // Rupture
+        filePath.includes('compileStylusBatch/node_modules/typographic/') || // Typographic
+        false; // Not a plugin
     }
 
     const importer = {
@@ -124,13 +144,16 @@ class StylusCompiler extends MultiFileCachingCompiler {
           return null;
         }
 
-        if (importPath[0] !== '{') {
+        if (importPath[0] !== '{' && !isPluginPath(importPath)) {
           // if it is not a custom syntax path, it could be a lookup in a folder
           for (let i = paths.length - 1; i >= 0; i--) {
             let joined = path.join(paths[i], importPath);
             // if we ended up with a custom syntax path, let's try without
             if (joined.startsWith('{}/')) {
               joined = joined.substr(3);
+            }
+            if (joined[0] === '{') {
+              continue; // We can never resolve paths like '{foo:bar}/styles.styl'
             }
             const resolvedPaths = resolvePath(joined);
             if (resolvedPaths.length) {
@@ -147,31 +170,12 @@ class StylusCompiler extends MultiFileCachingCompiler {
 
         return [absolutePath];
       },
+
       readFile(filePath) {
         // Because the default file loader is overwritten, we need to check for
         // absolute paths or built in plugins and allow the
         // default implementation to handle this
-        const isAbsolute = filePath[0] === '/';
-        const isStylusBuiltIn =
-          filePath.indexOf('/node_modules/stylus/lib/') !== -1;
-        const isNib = filePath.indexOf('/node_modules/nib/lib/nib/') !== -1;
-        const isAxis = filePath.indexOf('/node_modules/axis/axis/') !== -1;
-        const isJeet = filePath.indexOf('/node_modules/jeet/styl/') !== -1;
-        const isRupture =
-          filePath.indexOf('/node_modules/rupture/rupture/') !== -1;
-        const istypographic =
-          filePath.indexOf('/node_modules/typographic/stylus/') !== -1;
-
-        if (
-          isAbsolute ||
-          isStylusBuiltIn ||
-          isNib ||
-          isAxis ||
-          isJeet ||
-          isRupture ||
-          istypographic
-        ) {
-          // absolute path? let the default implementation handle this
+        if (filePath[0] === '/' || isPluginPath(filePath)) {
           return Npm.require('fs').readFileSync(filePath, 'utf8');
         }
 
@@ -223,11 +227,11 @@ class StylusCompiler extends MultiFileCachingCompiler {
 
     // Here is where the stylus module is instantiated and plugins are attached
     let style = stylus(inputFile.getContentsAsString())
-      .use(axis())
       .use(nib())
-      .use(rupture())
       .use(jeet())
-      .use(typographic());
+      .use(rupture({implicit: false})) // https://github.com/jescalan/rupture#usage
+      .use(typographic())
+      .use(axis({implicit: false})); // https://axis.netlify.com/#usage
 
     if (fileOptions.autoprefixer) {
       style = style.use(autoprefixer(fileOptions.autoprefixer));
@@ -342,12 +346,5 @@ class StylusCompiler extends MultiFileCachingCompiler {
       sourceMap: sourceMap,
     });
   }
-}
 
-function resolvePath(path) {
-  let paths = glob.sync(path);
-  if (paths.length === 0) {
-    paths = glob.sync(`**/${path}`);
-  }
-  return paths;
 }
