@@ -1,18 +1,37 @@
 # coagmano:stylus
 
-A fork of `meteor:stylus` including the stylus plugins from `mquandalle:stylus`
+A Stylus compiler for Meteor based off `meteor:stylus` and `mquandalle:stylus`
 
+## Why?
 `mquandalle:stylus` was failing when using the `import` syntax as part of
 `ecmascript` modules, so I forked the excellent `meteor:stylus` package which
 supports ecmascript and caching and added the same stylus plugins that
 `mquandalle:stylus` used so it is backwards compatible with `mquandalle:stylus`.
 
-### 1.1.0 Update
+## 2.0.0 update
+
+This update supports globs in imports as per the stylus standard: [Stylus File Globbing](http://stylus-lang.com/docs/import.html#file-globbing)
+
+Breaking changes:
+ - Included Stylus plugins are no longer implicitly loaded and must be imported explicitly, like so:
+   ```
+   @import 'nib';
+   ```
+ - No longer supports Cross-packages imports, <br>
+ eg: `@import '{procoder:fancy-buttons}/styles/buttons.styl'`
+ - Rupture version bumped to `0.7.2`
+ - Typographic version bumped to `3.0.0`
+ - Axis version bumped to `1.0.0`
+ - Autoprefixer-stylus version bumped to `0.14.0`
+
+**Warning:** This version may increase build times depending on your project setup. If it does, please leave details in an issue and downgrade to `1.*`. Until perf issues are resolved, I will continue to support versions `>1.1.0`
+
+## 1.1.0 Update
 
 This project now supports Meteor 1.8's lazy compilation via the
 `compileOneFileLater` method ([Meteor PR#9983](https://github.com/meteor/meteor/pull/9983))
 
-## Included packages
+## Included Stylus Plugins
 
 ### [Stylus](http://stylus-lang.com/) 0.54.5 (Meteor's fork)
 
@@ -109,6 +128,8 @@ The main app entry point for the styles, `app.styl`:
 
 
 ## Cross-packages imports
+
+**Note: Currently unsupported in `v2.0.0`**
 
 This package allows apps to import Stylus styles from packages and vice-versa.
 The import syntax from importing files from other packages is curly braces:
