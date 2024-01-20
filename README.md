@@ -7,6 +7,13 @@ A fork of `meteor:stylus` including the stylus plugins from `mquandalle:stylus`
 supports ecmascript and caching and added the same stylus plugins that
 `mquandalle:stylus` used so it is backwards compatible with `mquandalle:stylus`.
 
+
+### 1.1.3 Update
+
+Compatible with Meteor 3.0:
+  - Updated dependencies. 
+  - Replaced `Future` with `async`/`await`.
+
 ### 1.1.0 Update
 
 This project now supports Meteor 1.8's lazy compilation via the
