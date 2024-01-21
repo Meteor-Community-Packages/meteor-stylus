@@ -8,7 +8,13 @@ A Stylus compiler for Meteor based off `meteor:stylus` and `mquandalle:stylus`
 supports ecmascript and caching and added the same stylus plugins that
 `mquandalle:stylus` used so it is backwards compatible with `mquandalle:stylus`.
 
-## 2.0.0 update
+### 2.0.3 Update
+
+Compatible with Meteor 3.0:
+- Updated dependencies.
+- Replaced `Future` with `async`/`await`.
+
+### 2.0.0 Update
 
 This update supports globs in imports as per the stylus standard: [Stylus File Globbing](http://stylus-lang.com/docs/import.html#file-globbing)
 
@@ -26,7 +32,13 @@ Breaking changes:
 
 **Warning:** This version may increase build times depending on your project setup. If it does, please leave details in an issue and downgrade to `1.*`. Until perf issues are resolved, I will continue to support versions `>1.1.0`
 
-## 1.1.0 Update
+### 1.1.3 Update
+
+Compatible with Meteor 3.0:
+- Updated dependencies.
+- Replaced `Future` with `async`/`await`.
+
+### 1.1.0 Update
 
 This project now supports Meteor 1.8's lazy compilation via the
 `compileOneFileLater` method ([Meteor PR#9983](https://github.com/meteor/meteor/pull/9983))
