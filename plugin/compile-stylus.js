@@ -1,5 +1,4 @@
 const stylus = Npm.require('stylus');
-const Future = Npm.require('fibers/future');
 const glob = Npm.require('glob');
 const fs = Plugin.fs;
 const path = Plugin.path;
@@ -69,7 +68,7 @@ class StylusCompiler extends MultiFileCachingCompiler {
       }
     );
   }
-  compileOneFile(inputFile, allFiles) {
+  async compileOneFile(inputFile, allFiles) {
     const referencedImportPaths = [];
 
     function parseImportPath(filePath, importerDir) {
@@ -223,8 +222,6 @@ class StylusCompiler extends MultiFileCachingCompiler {
 
     const fileOptions = inputFile.getFileOptions();
 
-    const f = new Future();
-
     // Here is where the stylus module is instantiated and plugins are attached
     let style = stylus(inputFile.getContentsAsString())
       .use(nib())
@@ -320,15 +317,17 @@ class StylusCompiler extends MultiFileCachingCompiler {
       .set('cache', false)
       .set('importer', importer);
 
-    style.render(f.resolver());
     let css;
     try {
-      css = f.wait();
+      css = await new Promise((resolve, reject) => {
+        style.render((err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        });
+      });
     } catch (e) {
       inputFile.error({
         message: 'Stylus compiler error: ' + e.message,
-        line: e.lineno,
-        column: e.column,
       });
       return null;
     }
