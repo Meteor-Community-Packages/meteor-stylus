@@ -212,8 +212,8 @@
     },
     "stylus": {
       "version": "0.54.5",
-      "resolved": "https://github.com/meteor/stylus/tarball/bb47a357d132ca843718c63998eb37b90013a449",
-      "integrity": "sha1-X7DTXdx6DgWUHDyZ5wgPUSFBLi8= sha512-j6fvtoNfjx/TEIlIOZ53OqbP6uDdF5HsQidsRfvp0IfW0D5PCtV8IeHVQa4jjbhF9PbjOXX/rrt5lP4CGpgtfw=="
+      "resolved": "https://github.com/manueltimita/stylus/tarball/6eabf4db170b962a244243e0992ccca3b740dc7f",
+      "integrity": "sha512-AFq/Q4n4l6dIjNk01z/ho57jqMthNmZuVVgijkpLO2hvI8vK1YN83DCRrlC+G0fRXLs3CgF8rl+CSuIbL3vprA=="
     },
     "supports-color": {
       "version": "3.2.3",
