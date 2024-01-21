@@ -213,7 +213,7 @@
     "stylus": {
       "version": "0.54.5",
       "resolved": "https://github.com/meteor/stylus/tarball/bb47a357d132ca843718c63998eb37b90013a449",
-      "integrity": "sha512-j6fvtoNfjx/TEIlIOZ53OqbP6uDdF5HsQidsRfvp0IfW0D5PCtV8IeHVQa4jjbhF9PbjOXX/rrt5lP4CGpgtfw=="
+      "integrity": "sha1-X7DTXdx6DgWUHDyZ5wgPUSFBLi8= sha512-j6fvtoNfjx/TEIlIOZ53OqbP6uDdF5HsQidsRfvp0IfW0D5PCtV8IeHVQa4jjbhF9PbjOXX/rrt5lP4CGpgtfw=="
     },
     "supports-color": {
       "version": "3.2.3",
